@@ -238,4 +238,4 @@ def closeVideo(collection,subject):
 def contact():
     return render_template("contact.html")
 
-app.run(debug=True)
+# app.run(debug=True)
