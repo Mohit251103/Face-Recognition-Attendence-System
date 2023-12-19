@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<div class="container">
+    <form action="/student/{{collection}}/addstudent" method="post">
+        <div class="mb-3">
+            <label for="uroll" class="form-label">University Roll No.</label>
+            <input type="text" class="form-control border-black" id="uroll" name="uroll" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control border-black" id="name" name="name">
+        </div>
+        <!-- <p class="fs-5">Attendence record</p>
+        {% for subject in subjects %}
+        <div class="row g-3 align-items-center my-1">
+            <div class="col-auto">
+                <label for={{subject}} class="col-form-label">{{subject}}</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" id={{subject}} name={{subject}} class="form-control mx-2 border-black"
+                    aria-describedby="passwordHelpInline">
+            </div>
+        </div>
+        {% endfor %} -->
+        <div class="mb-3">
+            <label for="photo" class="form-label">Student's Photo</label>
+            <input class="form-control form-control-sm border-black" id="photo" name="photo" type="file">
+        </div>
+        <button type="submit" class="btn btn-outline-dark">Add Student</button>
+    </form>
+</div>
+
+{% endblock body %}

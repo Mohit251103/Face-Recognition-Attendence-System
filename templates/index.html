@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="container">
+  {% for collection in collections %}
+  <div class="card container my-3">
+    <div class="card-header">
+      Branch/Section
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{collection}}</h5>
+      <a href="/student/{{collection}}" class="btn btn-primary">Open</a>
+    </div>
+  </div>
+  {% endfor %}
+  <a href="/addsection" class="btn btn-primary">Add section</a>
+</div>
+{% endblock body %}

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="container bg-cream my-3 rounded-2">
+    <table class="table container my-2">
+        <thead>
+            <tr>
+                <th scope="col">Roll No</th>
+                <th scope="col">Name</th>
+                <th scope="col">Image</th>
+
+                {% for subject in subjects %}
+                <th scope="col">{{subject}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <th scope="row">{{student["uroll"]}}</th>
+                <td>{{student["name"]}}</td>
+                <td><img src="{{ url_for('static', filename='img/'+student['image']) }}" class="img-thumbnail"
+                        height="100px" width="100px" alt="student photo"></td>
+
+                {% for subject in subjects %}
+                    
+                <td>{{student["attendence"][subject]}}/{{student["totalAttendence"][subject]}}
+
+                    {% if student["totalAttendence"][subject] == 0 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+
+                    {% if (student["attendence"][subject]/student["totalAttendence"][subject]) > 0.75 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
+                    {% endif %}
+
+                    {% endif %}
+                </td>
+                {% endfor %}
+                <!-- <td>{{student["attendence"]["DSTL"]}}/{{student["totalAttendence"]["DSTL"]}}
+                    {% if student["totalAttendence"]["DSTL"] == 0 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+
+                    {% if (student["attendence"]["DSTL"]/student["totalAttendence"]["DSTL"]) > 0.75 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
+                    {% endif %}
+
+                    {% endif %}
+                </td>
+                <td>{{student["attendence"]["COA"]}}/{{student["totalAttendence"]["COA"]}}
+
+                    {% if student["totalAttendence"]["COA"] == 0 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+
+                    {% if (student["attendence"]["COA"]/student["totalAttendence"]["COA"]) > 0.75 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
+                    {% endif %}
+
+                    {% endif %}
+                </td>
+                <td>{{student["attendence"]["TC"]}}/{{student["totalAttendence"]["TC"]}}
+                    {% if student["totalAttendence"]["TC"] == 0 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+
+                    {% if (student["attendence"]["TC"]/student["totalAttendence"]["TC"]) > 0.75 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
+                    {% endif %}
+
+                    {% endif %}
+                </td>
+                <td>{{student["attendence"]["ESE"]}}/{{student["totalAttendence"]["ESE"]}}
+                    {% if student["totalAttendence"]["ESE"] == 0 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+
+                    {% if (student["attendence"]["ESE"]/student["totalAttendence"]["ESE"]) > 0.75 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
+                    {% endif %}
+
+                    {% endif %}
+                </td>
+                <td>{{student["attendence"]["CS"]}}/{{student["totalAttendence"]["CS"]}}
+                    {% if student["totalAttendence"]["CS"] == 0 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+
+                    {% if (student["attendence"]["CS"]/student["totalAttendence"]["CS"]) > 0.75 %}
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
+                    {% endif %}
+
+                    {% endif %}
+                </td> -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="d-inline-flex flex-direction-row">
+        <a href="/student/{{collection}}/addstudent" type="button" class="btn btn-outline-dark mx-2">Add Student</a>
+
+        {% if students %}
+        <a href="/student/{{collection}}/attendence" type="button" class="btn btn-outline-dark">Take Attendence</a>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock body %}
