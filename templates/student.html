@@ -11,6 +11,7 @@
                 {% for subject in subjects %}
                 <th scope="col">{{subject}}</th>
                 {% endfor %}
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -38,72 +39,7 @@
                     {% endif %}
                 </td>
                 {% endfor %}
-                <!-- <td>{{student["attendence"]["DSTL"]}}/{{student["totalAttendence"]["DSTL"]}}
-                    {% if student["totalAttendence"]["DSTL"] == 0 %}
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
-                    {% else %}
-
-                    {% if (student["attendence"]["DSTL"]/student["totalAttendence"]["DSTL"]) > 0.75 %}
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
-                    {% else %}
-                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
-                    {% endif %}
-
-                    {% endif %}
-                </td>
-                <td>{{student["attendence"]["COA"]}}/{{student["totalAttendence"]["COA"]}}
-
-                    {% if student["totalAttendence"]["COA"] == 0 %}
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
-                    {% else %}
-
-                    {% if (student["attendence"]["COA"]/student["totalAttendence"]["COA"]) > 0.75 %}
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
-                    {% else %}
-                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
-                    {% endif %}
-
-                    {% endif %}
-                </td>
-                <td>{{student["attendence"]["TC"]}}/{{student["totalAttendence"]["TC"]}}
-                    {% if student["totalAttendence"]["TC"] == 0 %}
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
-                    {% else %}
-
-                    {% if (student["attendence"]["TC"]/student["totalAttendence"]["TC"]) > 0.75 %}
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
-                    {% else %}
-                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
-                    {% endif %}
-
-                    {% endif %}
-                </td>
-                <td>{{student["attendence"]["ESE"]}}/{{student["totalAttendence"]["ESE"]}}
-                    {% if student["totalAttendence"]["ESE"] == 0 %}
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
-                    {% else %}
-
-                    {% if (student["attendence"]["ESE"]/student["totalAttendence"]["ESE"]) > 0.75 %}
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
-                    {% else %}
-                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
-                    {% endif %}
-
-                    {% endif %}
-                </td>
-                <td>{{student["attendence"]["CS"]}}/{{student["totalAttendence"]["CS"]}}
-                    {% if student["totalAttendence"]["CS"] == 0 %}
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
-                    {% else %}
-
-                    {% if (student["attendence"]["CS"]/student["totalAttendence"]["CS"]) > 0.75 %}
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
-                    {% else %}
-                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
-                    {% endif %}
-
-                    {% endif %}
-                </td> -->
+                <td><a href="/student/{{collection}}/{{student['uroll']}}/personalData" class="btn btn-outline-dark">View</a></td>
             </tr>
             {% endfor %}
         </tbody>

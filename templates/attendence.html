@@ -5,7 +5,7 @@
         <p>*** Please wait 10 seconds before closing the video for better results ***</p>
 
         <h3 class="text-center">{{subject}}'s Attendence</h3>
-        <img src="{{ url_for('videoFeed',collection = collection, subject = subject) }}" class="object-fit-none border rounded" alt="class video">
+        <img src="{{ url_for('videoFeed',collection = collection, subject = subject) }}" class="object-fit-none border rounded video" alt="class video">
         <br>
         <a href="/closeVideo/{{collection}}/{{subject}}" type="button" class="btn btn-outline-dark my-2 disable">Mark Attendence</a>
     </div>

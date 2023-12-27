@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="container">
+    <h2 class="text-center mb-4">Student Attendance Record</h2>
+
+    <div class="row align-items-center">
+        <div class="col-md-3 text-center">
+            <img src="{{ url_for('static', filename='img/'+student['image']) }}" class="img-thumbnail mx-2"
+                        height="200px" width="200px" alt="student photo">
+        </div>
+        <div class="col-md-9">
+            <p><strong>Roll No:</strong> {{student['uroll']}}</p>
+            <p><strong>Name:</strong> {{student['name']}}</p>
+            <p><strong>Section:</strong> {{collection}}</p>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped mt-4">
+        <thead class="thead-dark">
+            <tr>
+                <th>Subject</th>
+                <th>Attendance</th>
+                <th>Percentage</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subject in subjects %}
+            <tr>
+                <td>{{subject}}</td>
+                <td>{{student['attendence'][subject]}}/{{student['totalAttendence'][subject]}}</td>
+                <td>{{percentage[subject]}}%</td>
+                <td>
+                    {% if student["totalAttendence"][subject] == 0 %}
+                    Pass
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+
+                    {% if (student["attendence"][subject]/student["totalAttendence"][subject]) > 0.75 %}
+                    Pass
+                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    {% else %}
+                    Detain
+                    <i class="fa-regular fa-circle-xmark" style="color: #f43201;"></i>
+                    {% endif %}
+
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+{% endblock body %}

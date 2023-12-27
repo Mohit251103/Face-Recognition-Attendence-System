@@ -7,13 +7,30 @@ import numpy as np
 import datetime
 import csv
 import pandas as pd
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import Mapped, mapped_column
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/myDatabase"
+# app.config["MONGO_URI"] = "mongodb://localhost:27017/SubjectsForSection"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 app.config["SECRET_KEY"] = "mysecret"
 db = PyMongo(app).db
+# db_sub = PyMongo(app).db
+db_sql = SQLAlchemy(app)
 
 f = None
+
+class Subject(db_sql.Model):
+    id: Mapped[int] = mapped_column(db_sql
+                                    .Integer, primary_key=True)
+    section: Mapped[str] = mapped_column(db_sql
+                                         .String, unique=True, nullable=False)
+    subjects: Mapped[str] = mapped_column(db_sql
+                                          .String(255))
+
+with app.app_context():
+    db_sql.create_all()
 
 camera = cv2.VideoCapture(0)
 def gen_frames(known_face_encodings, expected_students, temp_students,lnwriter,collection, subject):
@@ -82,11 +99,17 @@ def addSection():
     if request.method == 'POST':
         section = request.form['sectionName']
         subjects = request.form['subjectsTaught']
+        section_subject = Subject(section=section, subjects=subjects)
+        print(section_subject)
+        db_sql.session.add(section_subject)
+        db_sql.session.commit()
         subjects = subjects.split(",")
         sub = []
         for i in subjects:
             sub.append(i.upper())
 
+        # db_sub.create_collection(section)
+        # db_sub[section].insert_one({"subjects":sub})
         db.create_collection(section)
         session[f'subjectsOf{section}'] = sub
         return redirect('/')
@@ -97,20 +120,54 @@ def addSection():
 def fetchStudentData(collection):
     data = db[collection].find({})
     students = []
-    sub = session.get(f'subjectsOf{collection}',[])
-    print(sub)
+    subjects = Subject.query.filter_by(section = collection).first().subjects
+    subjects = subjects.split(",")
+    sub = []
+    for i in subjects:
+        sub.append(i.upper())
+    # if sub == []:
+    #     attendence = data[0]['attendence']
+    #     for i in attendence:
+    #         sub.append(i)
+
+    # print(sub)
     for student in data:
         with open(f"static/img/{student['uroll']}.png","wb") as f:
             f.write(base64.b64decode(student['image']))
 
-        temp = student;
+        temp = student
         temp['image'] = f"{student['uroll']}.png"
         students.append(temp)
     return render_template("student.html",students = students,collection = collection, subjects = sub)
 
+@app.route("/student/<string:collection>/<string:uroll>/personalData")
+def personalData(collection,uroll):
+    student = db[collection].find_one({'uroll':uroll})
+    subjects = Subject.query.filter_by(section=collection).first().subjects
+    subjects = subjects.split(",")
+    sub = []
+    for i in subjects:
+        sub.append(i.upper())
+
+    percentage = {}
+    for i in sub:
+        if int(student['totalAttendence'][i]) == 0:
+            sub_perc = 0
+        else:
+            sub_perc = int(student['attendence'][i]) / int(student['totalAttendence'][i]) * 100
+        percentage[i] = sub_perc
+    temp = student
+    temp['image'] = f"{student['uroll']}.png"
+    return render_template("studentPersonal.html",student = temp,collection = collection, subjects = sub, percentage=percentage)
+
 @app.route("/student/<string:collection>/addstudent",methods=['GET','POST'])
 def addStudentData(collection):
-    sub = session.get(f'subjectsOf{collection}',[])
+    data = db[collection].find({})
+    subjects = Subject.query.filter_by(section=collection).first().subjects
+    subjects = subjects.split(",")
+    sub = []
+    for i in subjects:
+        sub.append(i.upper())
     if request.method == 'POST':
         uroll = request.form['uroll']
         name = request.form['name']
@@ -134,13 +191,19 @@ def addStudentData(collection):
 
 @app.route("/student/<string:collection>/attendence",methods=['GET','POST'])
 def selectSubject(collection):
-    sub = session.get(f'subjectsOf{collection}',[])
+    data = db[collection].find({})
+    subjects = Subject.query.filter_by(section=collection).first().subjects
+    subjects = subjects.split(",")
+    sub = []
+    for i in subjects:
+        sub.append(i.upper())
     if request.method == 'POST':
         subject = request.form['subject']
         return render_template("attendence.html", collection=collection, students=db[collection].find({}),
                                subject=subject)
 
     return render_template("attendenceSubject.html",collection=collection, subjects = sub)
+
 
 # @app.route("/student/<string:collection>/<string:subject>/takeAttendence",methods=['GET','POST'])
 # def recordAttendence(collection,subject):
@@ -180,7 +243,7 @@ def videoFeed():
     dt = datetime.datetime.now()
     current_date = dt.strftime("%Y-%m-%d")
 
-    f = open(f"{subject}-{current_date}.csv", 'w+', newline="")
+    f = open(f"{collection}-{subject}-{current_date}.csv", 'w+', newline="")
     lnwriter = csv.writer(f)
     lnwriter.writerow(["University Roll No","Name","Status","Date"])
 
@@ -195,12 +258,12 @@ def closeVideo(collection,subject):
         f.close()
 
     current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-    data = pd.read_csv(f'{subject}-{current_date}.csv')
+    data = pd.read_csv(f'{collection}-{subject}-{current_date}.csv')
     # print(data)
     data.sort_values("University Roll No")
 
     present_students = []
-    with open(f'{subject}-{current_date}.csv', mode='r') as file:
+    with open(f'{collection}-{subject}-{current_date}.csv', mode='r') as file:
         csvFile = csv.DictReader(file)
         for line in csvFile:
             present_students.append(line['University Roll No'])
@@ -238,4 +301,4 @@ def closeVideo(collection,subject):
 def contact():
     return render_template("contact.html")
 
-# app.run(debug=True)
+app.run(debug=True)
