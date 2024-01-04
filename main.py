@@ -20,6 +20,7 @@ db = PyMongo(app).db
 db_sql = SQLAlchemy(app)
 
 f = None
+camera = None
 
 class Subject(db_sql.Model):
     id: Mapped[int] = mapped_column(db_sql
@@ -32,8 +33,7 @@ class Subject(db_sql.Model):
 with app.app_context():
     db_sql.create_all()
 
-camera = cv2.VideoCapture(0)
-def gen_frames(known_face_encodings, expected_students, temp_students,lnwriter,collection, subject):
+def gen_frames(known_face_encodings, expected_students, temp_students,lnwriter,collection):
     while True:
         success, frame = camera.read()  # read the camera frame
         if not success:
@@ -140,6 +140,12 @@ def fetchStudentData(collection):
         students.append(temp)
     return render_template("student.html",students = students,collection = collection, subjects = sub)
 
+@app.route("/student/<string:collection>/delete")
+def deleteCollection(collection):
+    db[collection].drop()
+    collections = db.list_collection_names()
+    return render_template("index.html", collections=collections)
+
 @app.route("/student/<string:collection>/<string:uroll>/personalData")
 def personalData(collection,uroll):
     student = db[collection].find_one({'uroll':uroll})
@@ -220,6 +226,8 @@ def selectSubject(collection):
 
 @app.route("/video_feed")
 def videoFeed():
+    global camera
+    camera = cv2.VideoCapture(0)
     global f
     collection = request.args.get('collection')
     subject = request.args.get('subject')
@@ -249,7 +257,7 @@ def videoFeed():
 
     temp_students = expected_students.copy()
 
-    return Response(gen_frames(known_face_encodings,expected_students,temp_students,lnwriter,collection,subject), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(gen_frames(known_face_encodings,expected_students,temp_students,lnwriter,collection), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route("/closeVideo/<string:collection>/<string:subject>")
 def closeVideo(collection,subject):
