@@ -334,5 +334,3 @@ def closeVideo(collection,subject):
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
-
-app.run(debug=True)
