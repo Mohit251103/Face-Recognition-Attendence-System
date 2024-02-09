@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="container bg-cream my-3 rounded-2">
-    <table class="table container my-2">
+<div class="container bg-cream my-3 rounded-2 bg-image2 p-2 text-white">
+    <h2 class="text-center mb-4">Student Attendance Record</h2>
+    <table class="table my-2 table-radius">
         <thead>
             <tr>
                 <th scope="col">Roll No</th>
@@ -27,7 +28,7 @@
                 <td>{{student["attendence"][subject]}}/{{student["totalAttendence"][subject]}}
 
                     {% if student["totalAttendence"][subject] == 0 %}
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    <!-- <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i> -->
                     {% else %}
 
                     {% if (student["attendence"][subject]/student["totalAttendence"][subject]) > 0.75 %}
@@ -45,10 +46,10 @@
         </tbody>
     </table>
     <div class="d-inline-flex flex-direction-row">
-        <a href="/student/{{collection}}/addstudent" type="button" class="btn btn-outline-dark mx-2"><i class="fa-solid fa-plus"></i> Add Student</a>
+        <a href="/student/{{collection}}/addstudent" type="button" class="btn btn-light mx-2"><i class="fa-solid fa-plus"></i> Add Student</a>
 
         {% if students %}
-        <a href="/student/{{collection}}/attendence" type="button" class="btn btn-outline-dark"><i class="fa-regular fa-address-book"></i> Take Attendence</a>
+        <a href="/student/{{collection}}/attendence" type="button" class="btn btn-light"><i class="fa-regular fa-address-book"></i> Take Attendence</a>
         {% endif %}
 
     </div>

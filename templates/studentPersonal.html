@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="container">
-    <h2 class="text-center mb-4">Student Attendance Record</h2>
+<div class="container text-white">
+    <h2 class="text-center mb-4">Student Personal Record</h2>
 
     <div class="row align-items-center">
         <div class="col-md-3 text-center">
@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <table class="table table-bordered table-striped mt-4">
+    <table class="table table-bordered table-striped mt-4 table-radius">
         <thead class="thead-dark">
             <tr>
                 <th>Subject</th>
@@ -32,8 +32,8 @@
                 <td>{{percentage[subject]}}%</td>
                 <td>
                     {% if student["totalAttendence"][subject] == 0 %}
-                    Pass
-                    <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i>
+                    ---
+                    <!-- <i class="fa-regular fa-circle-check" style="color: #2fb913;"></i> -->
                     {% else %}
 
                     {% if (student["attendence"][subject]/student["totalAttendence"][subject]) > 0.75 %}

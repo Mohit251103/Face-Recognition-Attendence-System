@@ -9,8 +9,13 @@ import csv
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column
+import os
+
+UPLOAD_FOLDER = 'static'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config["MONGO_URI"] = "mongodb://localhost:27017/myDatabase"
 # app.config["MONGO_URI"] = "mongodb://localhost:27017/SubjectsForSection"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
@@ -18,6 +23,11 @@ app.config["SECRET_KEY"] = "mysecret"
 db = PyMongo(app).db
 # db_sub = PyMongo(app).db
 db_sql = SQLAlchemy(app)
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 f = None
 camera = None
@@ -90,7 +100,11 @@ def gen_frames(known_face_encodings, expected_students, temp_students,lnwriter,c
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @app.route("/")
-def hello_world():
+def start():
+    return render_template("landing.html")
+
+@app.route("/home")
+def home():
     collections = db.list_collection_names()
     return render_template("index.html",collections = collections)
 
@@ -112,7 +126,7 @@ def addSection():
         # db_sub[section].insert_one({"subjects":sub})
         db.create_collection(section)
         session[f'subjectsOf{section}'] = sub
-        return redirect('/')
+        return redirect('/home')
 
     return render_template("addSection.html")
 
@@ -144,6 +158,11 @@ def fetchStudentData(collection):
 def deleteCollection(collection):
     db[collection].drop()
     collections = db.list_collection_names()
+    section = Subject.query.filter_by(section=collection).first()
+    if section:
+        db_sql.session.delete(section)
+        db_sql.session.commit()
+        # print("Deleted")
     return render_template("index.html", collections=collections)
 
 @app.route("/student/<string:collection>/<string:uroll>/personalData")
@@ -177,8 +196,14 @@ def addStudentData(collection):
     if request.method == 'POST':
         uroll = request.form['uroll']
         name = request.form['name']
-        photo = request.form['photo']
-        with open(f"static/{photo}","rb") as f:
+        # print(request.files['photo'])
+        photo = request.files['photo']
+        if photo:
+            photo.save(os.path.join(app.config['UPLOAD_FOLDER'], photo.filename))
+        else:
+            print(f"Not saved {photo}")
+
+        with open(f"static/{photo.filename}","rb") as f:
             data = f.read()
             encoded_photo = base64.b64encode(data)
         # encoded_photo = base64.b64encode(photo)
@@ -192,7 +217,8 @@ def addStudentData(collection):
             total_attendence[i] = 0
         # print(attendence)
         db[collection].insert_one({"uroll": uroll, "name": name, "attendence": attendence,"totalAttendence":total_attendence, "image":encoded_photo})
-        return redirect('/')
+        # return render_template("student.html",collection=collection)
+        return redirect(f"/student/{collection}")
     return render_template("add.html",collection = collection,subjects = sub)
 
 @app.route("/student/<string:collection>/attendence",methods=['GET','POST'])
@@ -251,7 +277,7 @@ def videoFeed():
     dt = datetime.datetime.now()
     current_date = dt.strftime("%Y-%m-%d")
 
-    f = open(f"{collection}-{subject}-{current_date}.csv", 'w+', newline="")
+    f = open(f"Attendance/{collection}-{subject}-{current_date}.csv", 'w+', newline="")
     lnwriter = csv.writer(f)
     lnwriter.writerow(["University Roll No","Name","Status","Date"])
 
@@ -266,12 +292,12 @@ def closeVideo(collection,subject):
         f.close()
 
     current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-    data = pd.read_csv(f'{collection}-{subject}-{current_date}.csv')
+    data = pd.read_csv(f'Attendance/{collection}-{subject}-{current_date}.csv')
     # print(data)
     data.sort_values("University Roll No")
 
     present_students = []
-    with open(f'{collection}-{subject}-{current_date}.csv', mode='r') as file:
+    with open(f'Attendance/{collection}-{subject}-{current_date}.csv', mode='r') as file:
         csvFile = csv.DictReader(file)
         for line in csvFile:
             present_students.append(line['University Roll No'])

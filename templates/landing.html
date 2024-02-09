@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceRec - Facial Recognition Attendence System</title>
+    <link rel="stylesheet" href="/static/css/landing_style.css">
+</head>
+<body>
+    <div class="cover">
+        <video autoplay muted loop class="video">
+            <source src="{{ url_for('static', filename='pexels-cottonbro-8090202 (2160p).mp4') }}" type="video/mp4">
+            <!-- <source src="pexels-cottonbro-8090202 (2160p).mp4"> -->
+        </video>
+    </div>
+
+    <div class="container">
+        <div class="container1">
+            <h1 class="text-bg">Face Recognition Attendence System</h1>
+            <h3 class="text-mid">Digitalizing attendance system</h3>
+        </div>
+
+        <a href="/home" class="button">Start</a>
+    </div>
+</body>
+</html>

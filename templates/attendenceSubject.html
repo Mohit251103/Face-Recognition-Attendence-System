@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="container my-3">
+<div class="container my-3 p-4 bg-image3 text-white" style="width: fit-content;">
     <h3 class="text-center">Select subject whose attendence you want to take</h3>
     <form action="/student/{{collection}}/attendence" method="post">
         <div class="mb-3">
@@ -18,10 +18,11 @@
         </div>
         <div class="mb-3">
             <label for="section" class="form-label">Section</label>
-            <input type="text" class="form-control border-black" id="section" name="section" value="{{collection}}" readonly>
+            <input type="text" class="form-control border-black" id="section" name="section" value="{{collection}}"
+                readonly>
         </div>
         <!-- <a href="/video_feed" type="submit" class="btn btn-outline-dark">Start</a> -->
-        <button class="btn btn-outline-dark" type="submit"><i class="fa-solid fa-play"></i> Start</button>
+        <button class="btn btn-light" type="submit"><i class="fa-solid fa-play"></i> Start</button>
     </form>
 </div>
 {% endblock body %}

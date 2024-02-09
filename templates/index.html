@@ -1,18 +1,20 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="container">
+<div class="container my-2">
+  <h2 class="text-white">Sections</h2>
   {% for collection in collections %}
   <div class="card container my-3">
     <div class="card-header">
       Branch/Section
     </div>
-    <div class="card-body">
+    <div class="card-body bg-image1 text-white">
+      <!-- <img src="https://gstatic.com/classroom/themes/img_code.jpg" alt="Card Image" class="card-img-top" style="max-width: 100%; height: auto;"> -->
       <h5 class="card-title">{{collection}}</h5>
-      <a href="/student/{{collection}}" class="btn btn-primary"><i class="fa-regular fa-folder-open my-1"></i> Open</a>
-      <a href="/student/{{collection}}/delete" class="btn btn-primary mx-2"><i class="fa-solid fa-trash"></i> Delete</a>
+      <a href="/student/{{collection}}" class="btn btn-light"><i class="fa-regular fa-folder-open my-1"></i> Open</a>
+      <a href="/student/{{collection}}/delete" class="btn btn-light mx-2"><i class="fa-solid fa-trash"></i> Delete</a>
     </div>
   </div>
   {% endfor %}
-  <a href="/addsection" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add section</a>
+  <a href="/addsection" class="btn btn-light btn-shadow"><i class="fa-solid fa-plus"></i> Add section</a>
 </div>
 {% endblock body %}
